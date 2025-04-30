@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -591,12 +590,25 @@ const SidebarMenuButton = React.forwardRef<
 
     // Handle Tooltip wrapping logic
     if (tooltip) {
-      let tooltipProps: React.ComponentProps<typeof TooltipContent> = {};
+      let tooltipContent: React.ReactNode;
+      let tooltipProps: Omit<React.ComponentProps<typeof TooltipContent>, 'children'> = {};
+
       if (typeof tooltip === "string") {
-        tooltipProps = { children: tooltip };
-      } else {
-        tooltipProps = tooltip;
+        // Wrap string in a <p> tag for TooltipContent
+        tooltipContent = <p>{tooltip}</p>;
+      } else if (React.isValidElement(tooltip)) {
+         // If it's already a React element, use it directly
+        tooltipContent = tooltip;
+      } else if (typeof tooltip === 'object' && tooltip !== null && 'children' in tooltip) {
+         // If it's an object with props (including children)
+         tooltipProps = { ...tooltip }; // Spread props
+         tooltipContent = tooltip.children; // Extract children
+         // Ensure children is a valid element or wrap if it's a string
+         if (typeof tooltipContent === 'string') {
+           tooltipContent = <p>{tooltipContent}</p>;
+         }
       }
+
 
       // When `asChild` is true for TooltipTrigger, it expects a single valid React child.
       // We pass the `buttonElement` directly.
@@ -610,7 +622,9 @@ const SidebarMenuButton = React.forwardRef<
             align="center"
             hidden={state !== "collapsed" || isMobile}
             {...tooltipProps}
-          />
+          >
+            {tooltipContent}
+          </TooltipContent>
         </Tooltip>
       );
     }
