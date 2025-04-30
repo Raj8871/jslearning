@@ -1,3 +1,4 @@
+
 'use client'
 
 // src/app/(main)/learn/[topic]/page.tsx
@@ -6,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { BrainCircuit, Play, Loader2, BookOpen } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Ensure React is imported
 import Link from 'next/link';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { explainCode } from '@/ai/flows/explain-code'; // Use existing explain flow
@@ -271,10 +272,10 @@ Loops are used to execute a block of code repeatedly based on a condition.
 **Array Iteration Methods:**
 
 JavaScript arrays have built-in methods for iteration, often preferred over traditional loops for clarity:
--   **\`forEach(callbackFn)\`**: Executes a provided function once for each array element.
--   **\`map(callbackFn)\`**: Creates a new array populated with the results of calling a provided function on every element.
--   **\`filter(callbackFn)\`**: Creates a new array with all elements that pass the test implemented by the provided function.
--   **\`reduce(callbackFn, initialValue)\`**: Executes a reducer function on each element, resulting in a single output value.
+-   \`forEach(callbackFn)\`: Executes a provided function once for each array element.
+-   \`map(callbackFn)\`: Creates a new array populated with the results of calling a provided function on every element.
+-   \`filter(callbackFn)\`: Creates a new array with all elements that pass the test implemented by the provided function.
+-   \`reduce(callbackFn, initialValue)\`: Executes a reducer function on each element, resulting in a single output value.
 -   *...and many more (\`find\`, \`some\`, \`every\`, etc.)*
 
 Run the code examples to see each loop type in action!
@@ -663,8 +664,8 @@ Placing created elements onto the page or removing existing ones.
 Making elements react to user interactions (clicks, mouse movements, key presses, etc.).
 
 -   \`element.addEventListener('eventName', function(event) { /* code to run */ })\`: The standard and recommended way. Attaches an event listener function to an element.
-    -   `eventName`: The type of event (e.g., \`'click'\`, \`'mouseover'\`, \`'keydown'\`).
-    -   `function(event)`: The function to execute when the event occurs. The optional \`event\` object contains details about the event.
+    -   \`eventName\`: The type of event (e.g., 'click', 'mouseover', 'keydown').
+    -   \`function(event)\`: The function to execute when the event occurs. The optional \`event\` object contains details about the event.
 -   \`element.removeEventListener('eventName', functionReference)\`: Removes a previously added listener. Requires a reference to the *exact same function* used in \`addEventListener\`.
 
 **Important Note:** The code editor here cannot directly interact with an HTML page. To see DOM manipulation work, you need to run the JavaScript code within an HTML file loaded in a web browser or use the browser's developer console on a webpage.
@@ -831,15 +832,15 @@ ECMAScript (ES) is the standard that JavaScript is based on. Starting with ES6 (
 **Key Later Features (ES2016+):**
 
 -   **Exponentiation Operator (\`**\`):** \`2 ** 3\` is 8 (ES2016).
--   **`Array.prototype.includes()`**: Checks if an array contains a value (ES2016).
--   **`async`/`await`**: Syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code, improving readability (ES2017).
-    -   `async` keyword before a function declaration makes it return a Promise.
-    -   `await` keyword can be used inside an `async` function to pause execution until a Promise settles.
--   **`Object.values()` / `Object.entries()`**: Get arrays of object values or [key, value] pairs (ES2017).
+-   **\`Array.prototype.includes()\`**: Checks if an array contains a value (ES2016).
+-   **\`async\`/\`await\`**: Syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code, improving readability (ES2017).
+    -   \`async\` keyword before a function declaration makes it return a Promise.
+    -   \`await\` keyword can be used inside an \`async\` function to pause execution until a Promise settles.
+-   **\`Object.values()\` / \`Object.entries()\`**: Get arrays of object values or [key, value] pairs (ES2017).
 -   **Rest/Spread Properties for Objects**: Use \`...\` for gathering remaining object properties or spreading properties into new objects (ES2018).
--   **`Promise.prototype.finally()`**: Executes code when a Promise is settled (either resolved or rejected) (ES2018).
--   **Optional Chaining (`?.`)**: Safely access nested object properties without causing errors if an intermediate property is \`null\` or \`undefined\` (ES2020). \`user?.address?.street\`.
--   **Nullish Coalescing Operator (`??`)**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
+-   **\`Promise.prototype.finally()\`**: Executes code when a Promise is settled (either resolved or rejected) (ES2018).
+-   **Optional Chaining (\`?. \`)**: Safely access nested object properties without causing errors if an intermediate property is \`null\` or \`undefined\` (ES2020). \`user?.address?.street\`.
+-   **Nullish Coalescing Operator (\`??\`)**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
 -   *...and many more ongoing improvements.*
 
 Modern JavaScript relies heavily on these features. Run the examples to see them in action! Note that Promises and async/await handle operations that don't complete instantly.
@@ -904,7 +905,10 @@ export default function LearnTopicPage() {
         <h1 className="text-3xl font-bold text-destructive">Topic Not Found</h1>
         <p className="text-muted-foreground mt-4">The learning topic "{topicId}" does not exist.</p>
         <Button asChild variant="link" className="mt-6">
-          <Link href="/learn">Back to Learning Topics</Link>
+          <Link href="/learn">
+            {/* Wrap text in a span to avoid hydration error */}
+            <span>&larr; Back to Learning Topics</span>
+          </Link>
         </Button>
       </div>
     );
@@ -964,7 +968,7 @@ export default function LearnTopicPage() {
       <>
         <div className="mb-10">
             <Link href="/learn" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-                {/* Wrap text in a span */}
+                {/* Wrap text in a span to avoid hydration error */}
                 <span>&larr; Back to Topics</span>
             </Link>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">{topic.title}</h1>
@@ -1006,12 +1010,16 @@ export default function LearnTopicPage() {
                 />
                 <div className="flex justify-end space-x-2 mt-4">
                     <Button variant="outline" size="sm" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
-                         <BrainCircuit className={`mr-2 h-4 w-4 ${isExplaining ? 'animate-pulse text-accent' : ''}`} />
-                        Explain Code
+                        <span className="flex items-center"> {/* Ensure flex alignment */}
+                             <BrainCircuit className={`mr-2 h-4 w-4 ${isExplaining ? 'animate-pulse text-accent' : ''}`} />
+                            Explain Code
+                        </span>
                     </Button>
                     <Button size="sm" onClick={handleRunCode} disabled={isRunning || isExplaining} className="bg-accent hover:bg-accent/90">
-                        {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4" />}
-                        Run Code
+                        <span className="flex items-center"> {/* Ensure flex alignment */}
+                            {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4" />}
+                            Run Code
+                        </span>
                     </Button>
                 </div>
               </CardContent>
@@ -1044,3 +1052,4 @@ export default function LearnTopicPage() {
     </div>
   );
 }
+
