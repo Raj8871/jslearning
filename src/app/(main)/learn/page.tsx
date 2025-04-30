@@ -52,7 +52,10 @@ export default function LearnPage() {
                 </CardHeader>
                 <CardContent>
                    {/* You could add progress indication here later */}
-                   <p className="text-sm text-accent group-hover:underline">Start Learning →</p>
+                   <p className="text-sm text-accent group-hover:underline">
+                       {/* Wrap text in a span */}
+                       <span>Start Learning →</span>
+                   </p>
                 </CardContent>
               </Card>
             </Link>
@@ -68,7 +71,10 @@ export default function LearnPage() {
         </p>
         {/* Link this to the actual AI Explainer feature/page when built */}
         <Button asChild>
-          <Link href="/runner#ai-explainer-section">Try AI Explainer</Link> {/* Updated link to runner */}
+          <Link href="/runner#ai-explainer-section">
+              {/* Wrap children in a span */}
+              <span>Try AI Explainer</span>
+          </Link>
         </Button>
       </div>
     </div>

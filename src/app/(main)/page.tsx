@@ -23,13 +23,17 @@ export default function Home() {
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
                   <Link href="/learn">
-                    Start Learning
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    {/* Wrap children in a span */}
+                    <span>
+                      Start Learning
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </span>
                   </Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg">
                   <Link href="/runner">
-                    Try Code Runner
+                    {/* Wrap children in a span */}
+                    <span>Try Code Runner</span>
                   </Link>
                 </Button>
               </div>
@@ -102,8 +106,11 @@ export default function Home() {
           <div className="mx-auto w-full max-w-sm space-y-2">
              <Button asChild size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
                <Link href="/learn">
-                 Start Learning Now
-                 <ArrowRight className="ml-2 h-5 w-5" />
+                 {/* Wrap children in a span */}
+                 <span>
+                   Start Learning Now
+                   <ArrowRight className="ml-2 h-5 w-5" />
+                 </span>
                </Link>
              </Button>
           </div>

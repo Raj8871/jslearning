@@ -964,7 +964,8 @@ export default function LearnTopicPage() {
       <>
         <div className="mb-10">
             <Link href="/learn" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-                &larr; Back to Topics
+                {/* Wrap text in a span */}
+                <span>&larr; Back to Topics</span>
             </Link>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">{topic.title}</h1>
             <p className="mt-3 text-lg text-muted-foreground">{topic.description}</p>
