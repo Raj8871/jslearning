@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -58,17 +59,16 @@ export function Navbar() {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                 {/* Wrap multiple children in a single element */}
-                 <>
+                 {/* Wrap multiple children in a single span */}
+                 <span>
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle Menu</span>
-                 </>
+                 </span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <nav className="flex flex-col gap-4 mt-8">
                  <Link href="/" className="flex items-center space-x-2 mb-4" onClick={closeSheet}>
-                   {/* Wrap multiple children in a single element */}
                     <span className="flex items-center space-x-2">
                       <Mountain className="h-6 w-6 text-primary" />
                       <span className="font-bold inline-block">JS Ascent</span>
