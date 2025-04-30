@@ -133,6 +133,19 @@ export default function CodeRunnerPage() {
     }
   };
 
+  // Scroll to AI explainer section if hash is present
+    useEffect(() => {
+        if (window.location.hash === '#ai-explainer-section') {
+            const element = document.getElementById('ai-explainer-section');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+            // Optionally clear the hash
+            // window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+    }, []);
+
+
   return (
     <div className="container py-12 md:py-16 lg:py-20">
        <div className="mb-12 text-center">
@@ -165,7 +178,8 @@ export default function CodeRunnerPage() {
                  <Tooltip>
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleClearCode} disabled={isRunning || isExplaining}>
-                       <Trash2 className="h-5 w-5" />
+                        {/* Wrap icon in a span */}
+                       <span> <Trash2 className="h-5 w-5" /> </span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -175,7 +189,8 @@ export default function CodeRunnerPage() {
                 <Tooltip>
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
-                       <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} />
+                        {/* Wrap icon in a span */}
+                       <span> <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} /></span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -185,12 +200,15 @@ export default function CodeRunnerPage() {
                  <Tooltip>
                    <TooltipTrigger asChild>
                      <Button onClick={handleRunCode} disabled={isRunning || isExplaining} className="bg-accent hover:bg-accent/90">
-                       {isRunning ? (
-                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                       ) : (
-                         <Play className="mr-2 h-4 w-4" />
-                       )}
-                       Run
+                        {/* Wrap children in a span */}
+                       <span>
+                           {isRunning ? (
+                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                           ) : (
+                             <Play className="mr-2 h-4 w-4" />
+                           )}
+                           Run
+                       </span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -203,7 +221,7 @@ export default function CodeRunnerPage() {
         </Card>
 
         {/* Output/Explanation Section */}
-        <Card>
+        <Card id="ai-explainer-section"> {/* Add ID here */}
           <CardHeader>
             <CardTitle>{explanation ? 'AI Explanation' : 'Output'}</CardTitle>
             <CardDescription>{explanation ? 'AI analysis of your code.' : 'Results or errors from your code execution.'}</CardDescription>

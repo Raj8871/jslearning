@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Toaster } from "@/components/ui/toaster"; // Import Toaster
 import { cn } from '@/lib/utils';
 import { Geist, Geist_Mono } from 'next/font/google'; // Keeping Geist as requested
+import { AIChatButton } from '@/components/AIChatButton'; // Import the new component
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -46,6 +47,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             {/* Optional Footer can be added here */}
+            <AIChatButton /> {/* Add the AI Chat Button here */}
           </div>
           <Toaster />
         </ThemeProvider>
