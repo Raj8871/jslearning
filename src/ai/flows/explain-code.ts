@@ -1,4 +1,4 @@
-use server';
+'use server';
 
 /**
  * @fileOverview Explains JavaScript code snippets or variable names.
@@ -39,7 +39,7 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are a JavaScript expert. Explain the following code or variable name:
 
-  {{code}}
+  {{{code}}}
   `,
 });
 

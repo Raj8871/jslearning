@@ -564,6 +564,7 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      children, // Capture children
       ...props
     },
     ref
@@ -571,7 +572,8 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button" // Can be 'a' too if needed
     const { isMobile, state } = useSidebar()
 
-    const button = (
+    // The actual button/slot element
+    const buttonElement = (
       <Comp
         ref={ref as any} // Use 'any' for ref type compatibility between button/anchor/slot
         data-sidebar="menu-button"
@@ -579,30 +581,36 @@ const SidebarMenuButton = React.forwardRef<
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
-      />
-    )
+      >
+        {children}
+      </Comp>
+    );
 
+    // If no tooltip, return the button directly
     if (!tooltip) {
-      return button
+      return buttonElement;
     }
 
+    // Prepare tooltip props
+    let tooltipProps: React.ComponentProps<typeof TooltipContent> = {};
     if (typeof tooltip === "string") {
-      tooltip = {
-        children: tooltip,
-      }
+      tooltipProps = { children: tooltip };
+    } else {
+      tooltipProps = tooltip;
     }
 
     return (
       <Tooltip>
-        {/* Conditionally apply asChild to TooltipTrigger */}
-        <TooltipTrigger asChild={asChild}>
-            {button}
+        {/* TooltipTrigger *must* wrap a single child element. */}
+        {/* We use asChild to pass props down to the buttonElement */}
+        <TooltipTrigger asChild>
+          {buttonElement}
         </TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
           hidden={state !== "collapsed" || isMobile}
-          {...tooltip}
+          {...tooltipProps}
         />
       </Tooltip>
     )
