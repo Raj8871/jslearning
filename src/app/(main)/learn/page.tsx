@@ -1,4 +1,5 @@
 // src/app/(main)/learn/page.tsx
+import React from 'react'; // Import React
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Code, FunctionSquare, Variable, Workflow } from "lucide-react";
 import Link from "next/link";
@@ -11,8 +12,8 @@ const learningCategories = [
   { id: 'loops', title: 'Loops & Iteration', description: 'Master for, while, and do...while loops.', icon: Workflow, href: '/learn/loops' },
   { id: 'objects', title: 'Objects', description: 'Explore object literals, properties, methods, and prototypes.', icon: Code , href: '/learn/objects' },
   // SVG function components for Array and DOM icons
-  { id: 'arrays', title: 'Arrays', description: 'Work with arrays, array methods, and iteration techniques.', icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-accent"><path d="M10 8L14 12L10 16"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>, href: '/learn/arrays' },
-  { id: 'dom', title: 'DOM Manipulation', description: 'Interact with HTML elements using JavaScript.', icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-accent"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> , href: '/learn/dom' },
+  { id: 'arrays', title: 'Arrays', description: 'Work with arrays, array methods, and iteration techniques.', icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 8L14 12L10 16"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>, href: '/learn/arrays' },
+  { id: 'dom', title: 'DOM Manipulation', description: 'Interact with HTML elements using JavaScript.', icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> , href: '/learn/dom' },
   { id: 'es6', title: 'ES6+ Features', description: 'Learn modern JavaScript features like Promises, async/await, and more.', icon: BookOpen, href: '/learn/es6' },
 ];
 
@@ -29,14 +30,20 @@ export default function LearnPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {learningCategories.map((category) => {
-          const IconComponent = category.icon; // Get the component/function
+          const IconComponent = category.icon;
           return (
             <Link href={category.href} key={category.id} className="block group">
               <Card className="h-full transition-all duration-300 ease-in-out group-hover:shadow-lg group-hover:-translate-y-1 border-transparent hover:border-accent">
                 <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-                  <div className="flex-shrink-0">
-                    {/* Render the icon component */}
-                     <IconComponent className="h-8 w-8 text-accent" />
+                  <div className="flex-shrink-0 w-8 h-8"> {/* Added fixed size container */}
+                    {/* Conditionally render based on type: functional component or Lucide icon */}
+                    {typeof IconComponent === 'function' && IconComponent.prototype === undefined ? (
+                      // It's likely a functional component (like our SVG wrappers)
+                      React.createElement(IconComponent, { className: "h-full w-full text-accent" })
+                    ) : (
+                      // Assume it's a class component or Lucide icon component
+                      <IconComponent className="h-full w-full text-accent" />
+                    )}
                   </div>
                   <div className="flex-1 space-y-1">
                     <CardTitle>{category.title}</CardTitle>
