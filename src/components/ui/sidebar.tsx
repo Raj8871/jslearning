@@ -1,34 +1,25 @@
+
 "use client"
 
 import * as React from "react"
-// Removed: import { Slot } from "@radix-ui/react-slot"
-// Removed: import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
+import type { VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
+import { Slot } from "@radix-ui/react-slot"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-// Removed: import { Sheet, SheetContent } from "@/components/ui/sheet" // Not used directly in provided export list
-// Removed: import { Skeleton } from "@/components/ui/skeleton" // Not used directly in provided export list
-// Removed: import {
-//   Tooltip,
-//   TooltipContent,
-//   TooltipProvider,
-//   TooltipTrigger,
-// } from "@/components/ui/tooltip" // Not used directly in provided export list
-import type { VariantProps } from "class-variance-authority" // Keep this for sidebarMenuButtonVariants
-import { cva } from "class-variance-authority" // Keep this for sidebarMenuButtonVariants
-import { Sheet, SheetContent } from "@/components/ui/sheet" // Keep sheet for mobile
-import { Skeleton } from "@/components/ui/skeleton" // Keep Skeleton for skeleton component
+import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip" // Keep Tooltip related imports for menu button tooltips
-import { Slot } from "@radix-ui/react-slot" // Keep slot for AsChild props
+} from "@/components/ui/tooltip"
 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -84,7 +75,16 @@ const SidebarProvider = React.forwardRef<
 
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
-    const [_open, _setOpen] = React.useState(defaultOpen)
+    const [_open, _setOpen] = React.useState(() => {
+        if (typeof document !== 'undefined') {
+            const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+                ?.split('=')[1];
+            return cookieValue ? cookieValue === 'true' : defaultOpen;
+        }
+        return defaultOpen;
+    });
     const open = openProp ?? _open
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
@@ -549,8 +549,8 @@ const sidebarMenuButtonVariants = cva(
 )
 
 const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button"> & {
+  HTMLButtonElement | HTMLAnchorElement, // Allow both button and anchor refs
+  React.ComponentProps<"button"> & React.ComponentProps<"a"> & { // Combine props
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
@@ -568,12 +568,12 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button" // Can be 'a' too if needed
     const { isMobile, state } = useSidebar()
 
     const button = (
       <Comp
-        ref={ref}
+        ref={ref as any} // Use 'any' for ref type compatibility between button/anchor/slot
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
@@ -594,7 +594,10 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        {/* Conditionally apply asChild to TooltipTrigger */}
+        <TooltipTrigger asChild={asChild}>
+            {button}
+        </TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
