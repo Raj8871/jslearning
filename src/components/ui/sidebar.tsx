@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { VariantProps, cva } from "class-variance-authority"
+// Removed: import { Slot } from "@radix-ui/react-slot"
+// Removed: import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -10,14 +10,26 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
+// Removed: import { Sheet, SheetContent } from "@/components/ui/sheet" // Not used directly in provided export list
+// Removed: import { Skeleton } from "@/components/ui/skeleton" // Not used directly in provided export list
+// Removed: import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipProvider,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip" // Not used directly in provided export list
+import type { VariantProps } from "class-variance-authority" // Keep this for sidebarMenuButtonVariants
+import { cva } from "class-variance-authority" // Keep this for sidebarMenuButtonVariants
+import { Sheet, SheetContent } from "@/components/ui/sheet" // Keep sheet for mobile
+import { Skeleton } from "@/components/ui/skeleton" // Keep Skeleton for skeleton component
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip" // Keep Tooltip related imports for menu button tooltips
+import { Slot } from "@radix-ui/react-slot" // Keep slot for AsChild props
+
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -84,7 +96,9 @@ const SidebarProvider = React.forwardRef<
         }
 
         // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        if (typeof document !== 'undefined') {
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        }
       },
       [setOpenProp, open]
     )
@@ -107,9 +121,10 @@ const SidebarProvider = React.forwardRef<
           toggleSidebar()
         }
       }
-
-      window.addEventListener("keydown", handleKeyDown)
-      return () => window.removeEventListener("keydown", handleKeyDown)
+      if (typeof window !== 'undefined') {
+           window.addEventListener("keydown", handleKeyDown)
+           return () => window.removeEventListener("keydown", handleKeyDown)
+      }
     }, [toggleSidebar])
 
     // We add a state so that we can do data-state="expanded" or "collapsed".

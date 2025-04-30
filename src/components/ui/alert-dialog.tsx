@@ -5,6 +5,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+// Removed: import type { VariantProps } from "class-variance-authority" // Not used
 
 const AlertDialog = AlertDialogPrimitive.Root
 
