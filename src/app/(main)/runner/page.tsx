@@ -16,46 +16,52 @@ import {
 } from "@/components/ui/tooltip";
 
 // Basic security measure: Function constructor alternative (slightly safer context)
+// Wrap code execution in a try-catch to handle potential runtime errors within the evaluated code
 const safeEval = (code: string) => {
-  try {
-    // Use a function constructor that doesn't inherit global scope directly
-    // Capture console.log outputs
-    let output = '';
-    const customConsole = {
+  let output = '';
+  const customConsole = {
       log: (...args: any[]) => {
-        output += args.map(arg => {
-          if (typeof arg === 'object' && arg !== null) {
-            try {
-              // Limit stringification depth/length if needed in future
-              return JSON.stringify(arg, null, 2);
-            } catch (e: any) {
-                // Handle circular references more gracefully
-                if (e.name === 'TypeError' && e.message.includes('circular structure')) {
-                    return '[Circular Object]';
-                }
-               return `[Error Stringifying Object: ${e.message}]`;
-            }
-          }
-          return String(arg);
-        }).join(' ') + '\n';
+          output += args.map(arg => {
+              if (typeof arg === 'object' && arg !== null) {
+                  try {
+                      // Limit stringification depth/length if needed in future
+                      return JSON.stringify(arg, null, 2);
+                  } catch (e: any) {
+                      // Handle circular references more gracefully
+                      if (e.name === 'TypeError' && e.message.includes('circular structure')) {
+                          return '[Circular Object]';
+                      }
+                      return `[Error Stringifying Object: ${e.message}]`;
+                  }
+              }
+              return String(arg);
+          }).join(' ') + '\n';
       },
-       error: (...args: any[]) => {
-         output += `ERROR: ${args.map(String).join(' ')}\n`;
-       },
-       warn: (...args: any[]) => {
-         output += `WARN: ${args.map(String).join(' ')}\n`;
-       }
-    };
+      error: (...args: any[]) => {
+          output += `ERROR: ${args.map(String).join(' ')}\n`;
+      },
+      warn: (...args: any[]) => {
+          output += `WARN: ${args.map(String).join(' ')}\n`;
+      }
+  };
 
-    // Create a function with the custom console injected
-    const func = new Function('console', code);
-    func(customConsole); // Execute the code
-    return { output: output || 'Code executed successfully (no console output).', error: null };
+  try {
+      // Create a function with the custom console injected
+      // Add a check for 'use strict' as it can cause issues when used globally inside the Function constructor
+      const sanitizedCode = code.trim().startsWith("'use strict'") || code.trim().startsWith('"use strict"')
+          ? code.substring(code.indexOf(';') + 1)
+          : code;
+
+      const func = new Function('console', sanitizedCode);
+      func(customConsole); // Execute the code
+      return { output: output || 'Code executed successfully (no console output).', error: null };
   } catch (error: any) {
-    // Removed console.error - The error is handled by returning it.
-    return { output: null, error: error.message || 'An unknown error occurred.' };
+      // Capture errors from the code execution itself
+      console.error("Error during safeEval execution:", error); // Log the actual error for debugging
+      return { output: output, error: error.message || 'An unknown error occurred during execution.' }; // Return the captured output along with the error
   }
 };
+
 
 export default function CodeRunnerPage() {
   const [code, setCode] = useState<string>("console.log('Hello, JS Ascent!');");
@@ -79,7 +85,7 @@ export default function CodeRunnerPage() {
       setOutput(result.output);
       setError(result.error);
       setIsRunning(false);
-    }, 300); // Short delay for visual feedback
+    }, 50); // Reduced delay
   };
 
   const handleClearCode = () => {
@@ -92,35 +98,44 @@ export default function CodeRunnerPage() {
     }
   };
 
-  const handleExplainCode = async () => {
-      if (!code.trim()) {
-          toast({
-              title: "Code Required",
-              description: "Please enter some code to explain.",
-              variant: "destructive",
-          });
-          return;
-      }
-      setIsExplaining(true);
-      setExplanation(null); // Clear previous explanation
-      setOutput(null); // Clear output/error
-      setError(null);
+ const handleExplainCode = async () => {
+    if (!code.trim()) {
+        toast({
+            title: "Code Required",
+            description: "Please enter some code to explain.",
+            variant: "destructive",
+        });
+        return;
+    }
+    setIsExplaining(true);
+    setExplanation(null); // Clear previous explanation
+    setOutput(null); // Clear output/error
+    setError(null);
 
-      try {
-          const result = await explainCode({ code });
-          setExplanation(result.explanation);
-      } catch (err) {
-          console.error("Error explaining code:", err); // Keep this console.error for actual AI call failures
-          toast({
-              title: "Explanation Failed",
-              description: "Could not get explanation from AI. Please try again.",
-              variant: "destructive",
-          });
-           setExplanation("Sorry, I couldn't generate an explanation right now.");
-      } finally {
-          setIsExplaining(false);
-      }
-  };
+    try {
+        const result = await explainCode({ code });
+        setExplanation(result.explanation);
+    } catch (err: any) { // Catch specific error types if possible
+        console.error("Error explaining code:", err);
+        let description = "Could not get explanation from AI. Please try again.";
+        // Check if the error message indicates a specific, potentially temporary issue
+        if (err.message && (err.message.includes('503') || err.message.includes('overloaded') || err.message.includes('Service Unavailable'))) {
+            description = "The AI model is temporarily unavailable or overloaded. Please try again in a few moments.";
+        } else if (err.message && err.message.includes('API key not valid')) {
+             description = "AI configuration error. Please check the API key.";
+        }
+
+        toast({
+            title: "Explanation Failed",
+            description: description,
+            variant: "destructive",
+        });
+        setExplanation(`Sorry, an error occurred while generating the explanation: ${description}`); // Provide feedback in the explanation area too
+    } finally {
+        setIsExplaining(false);
+    }
+ };
+
 
   // Basic tab handling for the textarea
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -184,6 +199,7 @@ export default function CodeRunnerPage() {
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleClearCode} disabled={isRunning || isExplaining}>
                        <Trash2 className="h-5 w-5" />
+                       <span className="sr-only">Clear Code</span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -194,6 +210,7 @@ export default function CodeRunnerPage() {
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
                        <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} />
+                        <span className="sr-only">Explain Code with AI</span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -203,12 +220,14 @@ export default function CodeRunnerPage() {
                  <Tooltip>
                    <TooltipTrigger asChild>
                      <Button onClick={handleRunCode} disabled={isRunning || isExplaining} className="bg-accent hover:bg-accent/90">
-                       {isRunning ? (
-                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                       ) : (
-                         <Play className="mr-2 h-4 w-4" />
-                       )}
-                       Run
+                        <span className="flex items-center">
+                             {isRunning ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              ) : (
+                                <Play className="mr-2 h-4 w-4" />
+                              )}
+                              Run
+                        </span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>

@@ -655,9 +655,12 @@ if (selectedButton) {
 // Remove the dynamically added container after a delay to allow viewing changes
 // In a real scenario, you wouldn't typically remove everything like this
 // setTimeout(() => {
-//   document.body.removeChild(container);
-//   console.log("\\n--- Cleanup: Removed dynamic container ---");
+//   if (document.body.contains(container)) {
+//      document.body.removeChild(container);
+//      console.log("\\n--- Cleanup: Removed dynamic container ---");
+//    }
 // }, 5000); // Remove after 5 seconds
+
 
 console.warn("\\nNOTE: DOM manipulation output is limited in this environment. Effects are best observed in a browser.");
 `,
@@ -916,32 +919,113 @@ Modern JavaScript relies heavily on these features. Run the examples to see them
 };
 
 // Basic security measure: Function constructor alternative (slightly safer context)
+// Wrap code execution in a try-catch to handle potential runtime errors within the evaluated code
 const safeEval = (code: string) => {
-  try {
     let output = '';
     const customConsole = {
-      log: (...args: any[]) => {
-        output += args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ') + '\n';
-      },
-       clear: () => { output = '--- Console Cleared ---\n'; }, // Handle console.clear
-       error: (...args: any[]) => { output += `ERROR: ${args.map(String).join(' ')}\n`; },
-       warn: (...args: any[]) => { output += `WARN: ${args.map(String).join(' ')}\n`; }
+        log: (...args: any[]) => {
+            output += args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ') + '\n';
+        },
+        clear: () => { output = '--- Console Cleared ---\n'; },
+        error: (...args: any[]) => { output += `ERROR: ${args.map(String).join(' ')}\n`; },
+        warn: (...args: any[]) => { output += `WARN: ${args.map(String).join(' ')}\n`; }
     };
-    // Prepend code to handle document/window access if necessary
-    // This is a basic sandbox, not foolproof security
-    const wrappedCode = `
-      const document = typeof window !== 'undefined' ? window.document : { body: { appendChild: () => {}, removeChild: () => {} }, getElementById: () => null, querySelector: () => null, querySelectorAll: () => [], createElement: () => ({ style: {}, classList: { add: ()=>{}, remove: ()=>{} }, setAttribute: () => {}, textContent: '' }) };
-      const window = typeof window !== 'undefined' ? window : {};
-      ${code}
-    `;
-    const func = new Function('console', wrappedCode);
-    func(customConsole);
-    return { output: output || 'Code executed successfully (no console output).', error: null };
-  } catch (error: any) {
-     // Removed console.error - The error is handled by returning it.
-    return { output: null, error: error.message || 'An unknown error occurred.' };
-  }
+
+    // Mock basic DOM structure for safety and functionality within eval
+    const mockDocument = {
+        body: {
+            appendChild: (el: any) => {
+                 // Simulate appending to body, maybe log it
+                 customConsole.log(`[DOM] Appended <${el?.tagName || 'element'}> to body.`);
+                 return el;
+             },
+             removeChild: (el: any) => {
+                 customConsole.log(`[DOM] Removed <${el?.tagName || 'element'}> from body.`);
+                 return el;
+             },
+             contains: () => true, // Assume it contains elements for cleanup simulation
+        },
+        getElementById: (id: string) => {
+             customConsole.log(`[DOM] getElementById('${id}')`);
+             // Return a mock element structure
+             return {
+                 id: id,
+                 tagName: 'DIV', // Example tag name
+                 style: {},
+                 classList: { add: ()=>{}, remove: ()=>{} },
+                 textContent: '',
+                 appendChild: (el: any) => customConsole.log(`[DOM] Appended <${el?.tagName || 'element'}> to #${id}`),
+                 removeChild: (el: any) => customConsole.log(`[DOM] Removed <${el?.tagName || 'element'}> from #${id}`),
+                 insertBefore: (newEl: any, refEl: any) => customConsole.log(`[DOM] Inserted <${newEl?.tagName || 'element'}> before <${refEl?.tagName || 'element'}> in #${id}`),
+                 addEventListener: (type: string, handler: Function) => {
+                     customConsole.log(`[DOM] Added '${type}' listener to #${id}`);
+                     // You could store handlers and simulate triggering them later if needed
+                 },
+                 removeEventListener: (type: string, handler: Function) => {
+                     customConsole.log(`[DOM] Removed '${type}' listener from #${id}`);
+                 },
+                 // Add other common properties/methods as needed
+             };
+        },
+        querySelector: (selector: string) => {
+             customConsole.log(`[DOM] querySelector('${selector}')`);
+             // Return a mock element similar to getElementById
+             return {
+                 // ... mock element properties ...
+                 tagName: 'DIV', // Example
+                 style: {},
+                 classList: { add: ()=>{}, remove: ()=>{} },
+                 textContent: '',
+                 addEventListener: (type: string) => customConsole.log(`[DOM] Added '${type}' listener via querySelector`),
+                 removeEventListener: (type: string) => customConsole.log(`[DOM] Removed '${type}' listener via querySelector`),
+             };
+        },
+        querySelectorAll: (selector: string) => {
+            customConsole.log(`[DOM] querySelectorAll('${selector}')`);
+            return [{ /* mock element 1 */ }, { /* mock element 2 */ }]; // Return a mock NodeList (array-like)
+        },
+        createElement: (tagName: string) => {
+            customConsole.log(`[DOM] createElement('${tagName}')`);
+            return {
+                tagName: tagName.toUpperCase(),
+                id: '',
+                className: '',
+                textContent: '',
+                style: {},
+                classList: { add: (cls: string)=>{ customConsole.log(`[DOM] Added class ${cls}`); }, remove: (cls: string)=>{ customConsole.log(`[DOM] Removed class ${cls}`); } },
+                appendChild: (el: any) => customConsole.log(`[DOM] Appended child to <${tagName}>`),
+                setAttribute: (name: string, value: string) => customConsole.log(`[DOM] Set attribute ${name}="${value}" on <${tagName}>`),
+                // ... other methods/properties
+            };
+        },
+    };
+
+    const mockWindow = {
+        document: mockDocument,
+        // Add other window properties if needed, e.g., setTimeout, localStorage (mocked)
+        setTimeout: (fn: Function, ms: number) => setTimeout(fn, ms), // Use real setTimeout
+        addEventListener: (type: string) => customConsole.log(`[Window] Added '${type}' listener`),
+        removeEventListener: (type: string) => customConsole.log(`[Window] Removed '${type}' listener`),
+    };
+
+    try {
+        const wrappedCode = `
+          const document = arguments[1];
+          const window = arguments[2];
+          // Isolate the code further if necessary
+          (function() {
+            ${code}
+          })();
+        `;
+        const func = new Function('console', 'document', 'window', wrappedCode);
+        func(customConsole, mockDocument, mockWindow);
+        return { output: output || 'Code executed successfully (no console output).', error: null };
+    } catch (error: any) {
+        console.error("Error during safeEval execution:", error);
+        return { output: output, error: error.message || 'An unknown error occurred during execution.' };
+    }
 };
+
 
 export default function LearnTopicPage() {
   const params = useParams();
@@ -1020,10 +1104,17 @@ export default function LearnTopicPage() {
           // Using explainCode flow for specific code explanation
           const result = await explainCode({ code: `Explain this specific JavaScript code snippet:\n\n${code}` });
           setExplanation(result.explanation);
-      } catch (err) {
-          console.error("Error explaining code:", err); // Keep for actual AI errors
-          toast({ title: "Explanation Failed", variant: "destructive" });
-           setExplanation("Sorry, could not generate explanation.");
+      } catch (err: any) { // Catch specific error types if possible
+          console.error("Error explaining code:", err);
+          let description = "Could not get explanation from AI. Please try again.";
+         // Check if the error message indicates a specific, potentially temporary issue
+          if (err.message && (err.message.includes('503') || err.message.includes('overloaded') || err.message.includes('Service Unavailable'))) {
+              description = "The AI model is temporarily unavailable or overloaded. Please try again in a few moments.";
+          } else if (err.message && err.message.includes('API key not valid')) {
+               description = "AI configuration error. Please check the API key.";
+          }
+          toast({ title: "Explanation Failed", description: description, variant: "destructive" });
+           setExplanation(`Sorry, could not generate explanation: ${description}`); // Provide feedback in the explanation area too
       } finally {
           setIsExplaining(false);
       }
