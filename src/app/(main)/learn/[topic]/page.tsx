@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 const topicData: Record<string, { title: string; description: string; initialCode: string; aiPromptContent: string }> = {
   variables: {
     title: 'Variables & Data Types',
-    description: 'Learn how to declare variables using var, let, and const, and understand JavaScript\'s fundamental data types.',
+    description: "Learn how to declare variables using var, let, and const, and understand JavaScript's fundamental data types.",
     initialCode: `// Declare variables using var, let, and const
 var legacyVar = "I'm old school";
 let modernLet = 10;
@@ -164,7 +164,6 @@ Functions are blocks of reusable code that perform a specific task. They are fun
 Experiment with the different function types in the editor!
 `,
   },
-  // Add more topics here (loops, objects, arrays, dom, es6) following the same structure
   loops: {
       title: 'Loops & Iteration',
       description: 'Master control flow with for, while, and do...while loops, plus modern iteration methods.',
@@ -536,40 +535,64 @@ Try the examples in the code editor to see how these methods work!
   dom: {
         title: 'DOM Manipulation',
         description: 'Learn how to select, modify, create, and delete HTML elements using JavaScript.',
-        initialCode: `<!-- You need HTML to interact with! -->
-<!-- Imagine this HTML exists: -->
-<!--
-<div id="container">
-  <h1 class="title">Hello World</h1>
-  <p>This is a paragraph.</p>
-  <button id="myButton">Click Me</button>
-  <ul id="list">
-    <li>Item 1</li>
-    <li>Item 2</li>
-  </ul>
-</div>
--->
+        initialCode: `// --- You need HTML to interact with! ---
+// Create a simple structure dynamically
+const container = document.createElement('div');
+container.id = 'container';
+document.body.appendChild(container); // Add to the actual page body
+
+const title = document.createElement('h1');
+title.className = 'title';
+title.textContent = 'Hello World';
+container.appendChild(title);
+
+const paragraph = document.createElement('p');
+paragraph.textContent = 'This is a paragraph.';
+container.appendChild(paragraph);
+
+const button = document.createElement('button');
+button.id = 'myButton';
+button.textContent = 'Click Me';
+container.appendChild(button);
+
+const list = document.createElement('ul');
+list.id = 'list';
+const item1 = document.createElement('li');
+item1.textContent = 'Item 1';
+list.appendChild(item1);
+const item2 = document.createElement('li');
+item2.textContent = 'Item 2';
+list.appendChild(item2);
+container.appendChild(list);
+
+// Clear previous outputs if any from other runs
+console.clear();
+console.log("--- HTML structure created dynamically ---");
+
 
 // --- Selecting Elements ---
 console.log("--- Selecting ---");
-const container = document.getElementById("container");
-console.log("Container by ID:", container);
+const selectedContainer = document.getElementById("container");
+console.log("Container by ID:", selectedContainer ? 'Found' : 'Not Found');
 
-const title = document.querySelector(".title"); // Selects the first element with class 'title'
-console.log("Title by querySelector:", title);
+const selectedTitle = document.querySelector(".title"); // Selects the first element with class 'title'
+console.log("Title by querySelector:", selectedTitle ? selectedTitle.tagName : 'Not Found');
 
 const listItems = document.querySelectorAll("#list li"); // Selects all <li> inside #list
-console.log("List items by querySelectorAll:", listItems); // Returns a NodeList
+console.log("List items by querySelectorAll:", listItems.length); // Returns a NodeList
 
-const button = document.getElementById("myButton"); // Select button for later use
+const selectedButton = document.getElementById("myButton"); // Select button for later use
+console.log("Button by ID:", selectedButton ? 'Found' : 'Not Found');
+
 
 // --- Modifying Elements ---
 console.log("\\n--- Modifying ---");
-if (title) {
-  title.textContent = "Hello JavaScript!"; // Change text content
-  title.style.color = "blue"; // Change inline style
-  title.classList.add("highlight"); // Add a CSS class (assuming 'highlight' class is defined in CSS)
-  title.classList.remove("title"); // Remove a CSS class
+if (selectedTitle) {
+  selectedTitle.textContent = "Hello JavaScript!"; // Change text content
+  selectedTitle.style.color = "blue"; // Change inline style
+  selectedTitle.classList.add("highlight"); // Add a CSS class
+  selectedTitle.classList.remove("title"); // Remove a CSS class
+  console.log("Modified Title:", selectedTitle.textContent, selectedTitle.className);
 }
 
 // --- Creating and Appending Elements ---
@@ -577,49 +600,66 @@ console.log("\\n--- Creating & Appending ---");
 const newItem = document.createElement("li"); // Create a new <li> element
 newItem.textContent = "New Item 3"; // Set its text
 
-const list = document.getElementById("list");
-if (list) {
-  list.appendChild(newItem); // Add the new item to the end of the list
+const selectedList = document.getElementById("list");
+if (selectedList) {
+  selectedList.appendChild(newItem); // Add the new item to the end of the list
+  console.log("Appended new list item. List length:", selectedList.children.length);
 }
 
 const newParagraph = document.createElement("p");
 newParagraph.textContent = "This paragraph was added by JS.";
-if (container) {
+if (selectedContainer && selectedButton) {
     // Insert before the button
-    container.insertBefore(newParagraph, button);
+    selectedContainer.insertBefore(newParagraph, selectedButton);
+    console.log("Inserted paragraph before button.");
 }
 
 
 // --- Removing Elements ---
 console.log("\\n--- Removing ---");
-if (list && listItems.length > 0) {
-   // Remove the first list item (index 0) if it exists
-   // list.removeChild(listItems[0]);
-   // console.log("Removed first list item.");
+const firstListItem = document.querySelector("#list li"); // Get the first li again
+if (selectedList && firstListItem) {
+   selectedList.removeChild(firstListItem);
+   console.log("Removed first list item. List length:", selectedList.children.length);
 }
 
 
 // --- Event Handling ---
 console.log("\\n--- Event Handling ---");
-if (button) {
-  button.addEventListener("click", function() {
-    alert("Button clicked!");
-    // You can change element styles or content here too
-    if(container) container.style.backgroundColor = "#e0f7fa";
-  });
+// Store listener function to remove it later if needed
+const clickHandler = () => {
+    console.log("Button clicked! Changing container background.");
+    if(selectedContainer) selectedContainer.style.backgroundColor = "#e0f7fa"; // Example change
+    // Clean up listener to avoid duplicates on re-runs in editor
+    selectedButton?.removeEventListener("click", clickHandler);
+};
 
-  // You can add multiple listeners
-  button.addEventListener("mouseover", () => {
-    button.style.backgroundColor = "lightgreen";
+if (selectedButton) {
+  // Add the event listener
+  selectedButton.addEventListener("click", clickHandler);
+  console.log("Click event listener added to button. Try clicking it!");
+
+  // Example: Mouseover (will only log in browser console, not here)
+  selectedButton.addEventListener("mouseover", () => {
+     // console.log("Button mouseover"); // Won't show in safeEval output
+     selectedButton.style.backgroundColor = "lightgreen";
   });
-   button.addEventListener("mouseout", () => {
-    button.style.backgroundColor = ""; // Reset style
+   selectedButton.addEventListener("mouseout", () => {
+     // console.log("Button mouseout"); // Won't show in safeEval output
+     selectedButton.style.backgroundColor = ""; // Reset style
   });
+   console.log("Mouseover/out listeners added (effects visible in browser).")
 }
 
-// NOTE: This code won't run correctly here as there's no HTML page.
-// You'd run this in a browser's console on a page with the example HTML.
-console.warn("NOTE: DOM manipulation examples require an HTML page to work correctly.");
+// --- Cleanup ---
+// Remove the dynamically added container after a delay to allow viewing changes
+// In a real scenario, you wouldn't typically remove everything like this
+// setTimeout(() => {
+//   document.body.removeChild(container);
+//   console.log("\\n--- Cleanup: Removed dynamic container ---");
+// }, 5000); // Remove after 5 seconds
+
+console.warn("\\nNOTE: DOM manipulation output is limited in this environment. Effects are best observed in a browser.");
 `,
         aiPromptContent: `
 ### DOM Manipulation
@@ -668,25 +708,26 @@ Making elements react to user interactions (clicks, mouse movements, key presses
     -   \`function(event)\`: The function to execute when the event occurs. The optional \`event\` object contains details about the event.
 -   \`element.removeEventListener('eventName', functionReference)\`: Removes a previously added listener. Requires a reference to the *exact same function* used in \`addEventListener\`.
 
-**Important Note:** The code editor here cannot directly interact with an HTML page. To see DOM manipulation work, you need to run the JavaScript code within an HTML file loaded in a web browser or use the browser's developer console on a webpage.
+**Important Note:** The code editor environment here simulates DOM manipulation by actually adding/modifying elements on *this* page. The \`console.log\` outputs show the results of selection and modification steps. Event handlers (like button clicks) will log messages to the output console when triggered. For full visual effects and interaction, running similar code in a browser's developer console is ideal.
 `,
   },
   es6: {
     title: 'ES6+ Features',
     description: 'Explore modern JavaScript enhancements like let/const, arrow functions, Promises, async/await, destructuring, and more.',
     initialCode: `// --- let and const (Block Scope) ---
-// Already covered in 'Variables', but essential ES6
+console.log("--- Block Scope ---");
 if (true) {
   let blockLet = "Visible only here";
   const blockConst = "Also only here";
   var blockVar = "Visible outside (function/global scope)";
+  console.log("Inside block:", blockLet, blockConst);
 }
-// console.log(blockLet); // ReferenceError
-// console.log(blockConst); // ReferenceError
-console.log("blockVar:", blockVar); // Works
+// console.log(blockLet); // ReferenceError if uncommented
+// console.log(blockConst); // ReferenceError if uncommented
+console.log("Outside block (var):", blockVar); // Works
 
 // --- Arrow Functions ---
-// Already covered in 'Functions', concise syntax and lexical 'this'
+console.log("\\n--- Arrow Functions ---");
 const squares = [1, 2, 3].map(x => x * x);
 console.log("Squares:", squares); // Output: [1, 4, 9]
 
@@ -700,21 +741,20 @@ console.log(greeting);
 // --- Destructuring Assignment ---
 console.log("\\n--- Destructuring ---");
 // Object Destructuring
-const person = { firstName: "Bob", age: 35 };
+const person = { firstName: "Bob", age: 35, city: "London" };
 const { firstName, age } = person;
 console.log("Name:", firstName, "| Age:", age);
 
 // Array Destructuring
 const colors = ["red", "green", "blue"];
-const [firstColor, secondColor] = colors;
-console.log("Colors:", firstColor, secondColor);
+const [firstColor, , thirdColor] = colors; // Skip second element
+console.log("Colors (1st, 3rd):", firstColor, thirdColor);
 
 // --- Default Parameters ---
-// Covered in 'Functions'
+console.log("\\n--- Default Parameters ---");
 function multiply(a, b = 1) { // b defaults to 1
   return a * b;
 }
-console.log("\\n--- Default Parameters ---");
 console.log("multiply(5):", multiply(5)); // Output: 5
 console.log("multiply(5, 2):", multiply(5, 2)); // Output: 10
 
@@ -729,54 +769,77 @@ console.log("Sum(1, 2, 3, 4):", sum(1, 2, 3, 4)); // Output: 10
 // Spread Operator (expands iterables into arguments or elements)
 const arr1 = [1, 2];
 const arr2 = [3, 4];
-const combined = [...arr1, 0, ...arr2]; // Combine arrays
+const combined = [...arr1, 0, ...arr2, 5]; // Combine arrays
 console.log("Combined array:", combined);
 
-const obj1 = { a: 1 };
-const obj2 = { b: 2 };
-const mergedObj = { ...obj1, ...obj2, c: 3 }; // Merge objects (ES2018)
-console.log("Merged object:", mergedObj);
+const obj1 = { a: 1, b: 0 };
+const obj2 = { b: 2, c: 3 };
+const mergedObj = { ...obj1, ...obj2, d: 4 }; // Merge objects (later props overwrite earlier)
+console.log("Merged object:", mergedObj); // Output: { a: 1, b: 2, c: 3, d: 4 }
 
 // --- Promises (Handling Asynchronous Operations) ---
-console.log("\\n--- Promises ---");
-const myPromise = new Promise((resolve, reject) => {
-  const success = Math.random() > 0.3; // Simulate async success/failure
-  setTimeout(() => {
-    if (success) {
-      resolve("Data fetched successfully!");
-    } else {
-      reject("Error fetching data.");
-    }
-  }, 500); // Simulate 0.5s delay
-});
+console.log("\\n--- Promises (Example) ---");
+const createSimulatedPromise = (shouldSucceed, delay = 300) => {
+ return new Promise((resolve, reject) => {
+    setTimeout(() => {
+        if (shouldSucceed) {
+        resolve("Data fetched successfully!");
+        } else {
+        reject("Error fetching data.");
+        }
+    }, delay);
+ });
+};
 
-myPromise
-  .then(data => { // Handle success
-    console.log("Promise resolved:", data);
+// Example 1: Success
+const successPromise = createSimulatedPromise(true);
+successPromise
+  .then(data => {
+    console.log("Promise 1 resolved:", data);
   })
-  .catch(error => { // Handle failure
-    console.log("Promise rejected:", error);
+  .catch(error => {
+    console.log("Promise 1 rejected:", error); // This won't run
   })
-  .finally(() => { // Runs regardless of success/failure (ES2018)
-    console.log("Promise finished.");
+  .finally(() => {
+    console.log("Promise 1 finished.");
   });
 
+// Example 2: Failure
+const failurePromise = createSimulatedPromise(false, 400); // Slightly longer delay
+failurePromise
+  .then(data => {
+    console.log("Promise 2 resolved:", data); // This won't run
+  })
+  .catch(error => {
+    console.log("Promise 2 rejected:", error);
+  })
+  .finally(() => {
+     console.log("Promise 2 finished.");
+  });
+
+
 // --- async/await (Syntactic Sugar for Promises - ES2017) ---
-console.log("\\n--- async/await ---");
-async function fetchData() {
+console.log("\\n--- async/await (Example) ---");
+// Note: Needs an async context to use await top-level
+// We wrap it in an Immediately Invoked Async Function Expression (IIAFE)
+(async () => {
   console.log("Fetching data using async/await...");
   try {
     // 'await' pauses execution until the promise settles
-    const data = await myPromise; // Re-using the promise from above
+    const data = await createSimulatedPromise(true, 500); // Wait for success
     console.log("Async/await success:", data);
-    return data; // Async functions implicitly return a Promise
-  } catch (error) {
-    console.log("Async/await error:", error);
-    // Handle error or re-throw
-  }
-}
 
-fetchData(); // Call the async function
+    // Example of awaiting a failure
+    await createSimulatedPromise(false, 600); // This will throw an error
+    console.log("This line won't be reached if the above promise rejects.");
+
+  } catch (error) {
+    console.log("Async/await caught error:", error); // Catches the rejection
+  } finally {
+    console.log("Async function finished.");
+  }
+})();
+
 
 // --- Classes (Syntactic Sugar over Prototypal Inheritance) ---
 console.log("\\n--- Classes ---");
@@ -799,14 +862,18 @@ class Dog extends Animal { // Inheritance
   speak() { // Override parent method
     console.log(\`\${this.name} barks.\`);
   }
+
+  fetch() {
+    console.log(\`\${this.name} fetches the ball!\`)
+  }
 }
 
 const dog = new Dog("Rex", "German Shepherd");
 dog.speak(); // Output: Rex barks.
+dog.fetch(); // Output: Rex fetches the ball!
 console.log("Dog's breed:", dog.breed);
 
-// Note: async/await requires the context (like this IIFE) to work top-level in older environments
-// (async () => { await fetchData(); })();
+console.log("\\nNote: Promise/async outputs might appear after other logs due to delays.");
 `,
     aiPromptContent: `
 ### ES6+ Features (Modern JavaScript)
@@ -832,18 +899,18 @@ ECMAScript (ES) is the standard that JavaScript is based on. Starting with ES6 (
 **Key Later Features (ES2016+):**
 
 -   **Exponentiation Operator (\`**\`):** \`2 ** 3\` is 8 (ES2016).
--   **\`Array.prototype.includes()\`**: Checks if an array contains a value (ES2016).
+-   **\`Array.prototype.includes()\`**: Checks if an array contains a value (ES2017).
 -   **\`async\`/\`await\`**: Syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code, improving readability (ES2017).
     -   \`async\` keyword before a function declaration makes it return a Promise.
     -   \`await\` keyword can be used inside an \`async\` function to pause execution until a Promise settles.
 -   **\`Object.values()\` / \`Object.entries()\`**: Get arrays of object values or [key, value] pairs (ES2017).
 -   **Rest/Spread Properties for Objects**: Use \`...\` for gathering remaining object properties or spreading properties into new objects (ES2018).
 -   **\`Promise.prototype.finally()\`**: Executes code when a Promise is settled (either resolved or rejected) (ES2018).
--   **Optional Chaining (\`?. \`)**: Safely access nested object properties without causing errors if an intermediate property is \`null\` or \`undefined\` (ES2020). \`user?.address?.street\`.
--   **Nullish Coalescing Operator (\`??\`)**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
+-   **Optional Chaining (\`?.`)\`**: Safely access nested object properties without causing errors if an intermediate property is \`null\` or \`undefined\` (ES2020). \`user?.address?.street\`.
+-   **Nullish Coalescing Operator (\`??\`)\`**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
 -   *...and many more ongoing improvements.*
 
-Modern JavaScript relies heavily on these features. Run the examples to see them in action! Note that Promises and async/await handle operations that don't complete instantly.
+Modern JavaScript relies heavily on these features. Run the examples to see them in action! Note that Promises and async/await handle operations that don't complete instantly, so their console output might appear after later synchronous code.
 `,
   },
 };
@@ -856,14 +923,22 @@ const safeEval = (code: string) => {
       log: (...args: any[]) => {
         output += args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ') + '\n';
       },
+       clear: () => { output = '--- Console Cleared ---\n'; }, // Handle console.clear
        error: (...args: any[]) => { output += `ERROR: ${args.map(String).join(' ')}\n`; },
        warn: (...args: any[]) => { output += `WARN: ${args.map(String).join(' ')}\n`; }
     };
-    const func = new Function('console', code);
+    // Prepend code to handle document/window access if necessary
+    // This is a basic sandbox, not foolproof security
+    const wrappedCode = `
+      const document = typeof window !== 'undefined' ? window.document : { body: { appendChild: () => {}, removeChild: () => {} }, getElementById: () => null, querySelector: () => null, querySelectorAll: () => [], createElement: () => ({ style: {}, classList: { add: ()=>{}, remove: ()=>{} }, setAttribute: () => {}, textContent: '' }) };
+      const window = typeof window !== 'undefined' ? window : {};
+      ${code}
+    `;
+    const func = new Function('console', wrappedCode);
     func(customConsole);
     return { output: output || 'Code executed successfully (no console output).', error: null };
   } catch (error: any) {
-    console.error("Execution Error:", error);
+     // Removed console.error - The error is handled by returning it.
     return { output: null, error: error.message || 'An unknown error occurred.' };
   }
 };
@@ -895,9 +970,12 @@ export default function LearnTopicPage() {
        setRunOutput(null);
        setRunError(null);
        setExplanation(null);
+    } else {
+        setIsLoadingContent(false); // Ensure loading stops if topic not found
     }
     // Handle case where topic is not found? Maybe redirect or show 404
-  }, [topicId, topic]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topicId]); // Rerun effect only when topicId changes
 
   if (!topic && !isLoadingContent) {
     return (
@@ -906,7 +984,6 @@ export default function LearnTopicPage() {
         <p className="text-muted-foreground mt-4">The learning topic "{topicId}" does not exist.</p>
         <Button asChild variant="link" className="mt-6">
           <Link href="/learn">
-            {/* Wrap text in a span to avoid hydration error */}
             <span>&larr; Back to Learning Topics</span>
           </Link>
         </Button>
@@ -918,13 +995,17 @@ export default function LearnTopicPage() {
     setIsRunning(true);
     setRunOutput(null);
     setRunError(null);
+    setExplanation(null); // Clear explanation when running code
+
+    // Use setTimeout to allow UI update before blocking eval
     setTimeout(() => {
       const result = safeEval(code);
       setRunOutput(result.output);
       setRunError(result.error);
       setIsRunning(false);
-    }, 300);
+    }, 50); // Short delay is usually sufficient
   };
+
 
    const handleExplainCode = async () => {
       if (!code.trim()) {
@@ -933,12 +1014,14 @@ export default function LearnTopicPage() {
       }
       setIsExplaining(true);
       setExplanation(null);
+      setRunOutput(null); // Also clear run output
+      setRunError(null);  // Also clear run error
       try {
           // Using explainCode flow for specific code explanation
-          const result = await explainCode({ code: `Explain this specific code snippet:\n\n${code}` });
+          const result = await explainCode({ code: `Explain this specific JavaScript code snippet:\n\n${code}` });
           setExplanation(result.explanation);
       } catch (err) {
-          console.error("Error explaining code:", err);
+          console.error("Error explaining code:", err); // Keep for actual AI errors
           toast({ title: "Explanation Failed", variant: "destructive" });
            setExplanation("Sorry, could not generate explanation.");
       } finally {
@@ -960,7 +1043,7 @@ export default function LearnTopicPage() {
 
   return (
     <div className="container py-12 md:py-16">
-      {isLoadingContent ? (
+      {isLoadingContent || !topic ? ( // Show loader if loading or if topic is still null after loading attempt
           <div className="flex justify-center items-center min-h-[60vh]">
               <Loader2 className="h-12 w-12 animate-spin text-primary"/>
           </div>
@@ -968,7 +1051,6 @@ export default function LearnTopicPage() {
       <>
         <div className="mb-10">
             <Link href="/learn" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-                {/* Wrap text in a span to avoid hydration error */}
                 <span>&larr; Back to Topics</span>
             </Link>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">{topic.title}</h1>
@@ -1010,13 +1092,13 @@ export default function LearnTopicPage() {
                 />
                 <div className="flex justify-end space-x-2 mt-4">
                     <Button variant="outline" size="sm" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
-                        <span className="flex items-center"> {/* Ensure flex alignment */}
+                         <span className="flex items-center">
                              <BrainCircuit className={`mr-2 h-4 w-4 ${isExplaining ? 'animate-pulse text-accent' : ''}`} />
                             Explain Code
-                        </span>
+                         </span>
                     </Button>
                     <Button size="sm" onClick={handleRunCode} disabled={isRunning || isExplaining} className="bg-accent hover:bg-accent/90">
-                        <span className="flex items-center"> {/* Ensure flex alignment */}
+                        <span className="flex items-center">
                             {isRunning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Play className="mr-2 h-4 w-4" />}
                             Run Code
                         </span>
@@ -1027,18 +1109,27 @@ export default function LearnTopicPage() {
 
             <Card>
               <CardHeader>
+                 {/* Dynamically change title based on content */}
                 <CardTitle>{explanation ? "AI Explanation Output" : "Console Output"}</CardTitle>
                 <CardDescription>{explanation ? "AI analysis of the code in the editor." : "Results or errors from running the code."}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[150px] w-full rounded-md border bg-secondary p-3">
                   <pre className="text-sm whitespace-pre-wrap break-words">
-                     {isExplaining && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
-                     {explanation && !isExplaining && explanation}
-                     {!explanation && isRunning && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
-                     {!explanation && !isRunning && runOutput && <code className="text-foreground">{runOutput}</code>}
-                     {!explanation && !isRunning && runError && <code className="text-destructive">{`Error: ${runError}`}</code>}
-                     {!explanation && !isRunning && !runOutput && !runError && !isExplaining && (
+                     {/* Loading States */}
+                     {(isExplaining || isRunning) && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+
+                     {/* Explanation Output */}
+                     {explanation && !isExplaining && !isRunning && explanation}
+
+                      {/* Code Run Output (only if not explaining and not running) */}
+                     {!explanation && !isExplaining && !isRunning && runOutput && <code className="text-foreground">{runOutput}</code>}
+
+                     {/* Code Run Error (only if not explaining and not running) */}
+                     {!explanation && !isExplaining && !isRunning && runError && <code className="text-destructive">{`Error: ${runError}`}</code>}
+
+                      {/* Initial/Empty State */}
+                     {!explanation && !isExplaining && !isRunning && !runOutput && !runError && (
                         <span className="text-muted-foreground">Run code or ask for explanation to see output.</span>
                      )}
                   </pre>
@@ -1052,4 +1143,3 @@ export default function LearnTopicPage() {
     </div>
   );
 }
-

@@ -26,9 +26,14 @@ const safeEval = (code: string) => {
         output += args.map(arg => {
           if (typeof arg === 'object' && arg !== null) {
             try {
+              // Limit stringification depth/length if needed in future
               return JSON.stringify(arg, null, 2);
-            } catch (e) {
-              return '[Circular Object]';
+            } catch (e: any) {
+                // Handle circular references more gracefully
+                if (e.name === 'TypeError' && e.message.includes('circular structure')) {
+                    return '[Circular Object]';
+                }
+               return `[Error Stringifying Object: ${e.message}]`;
             }
           }
           return String(arg);
@@ -47,7 +52,7 @@ const safeEval = (code: string) => {
     func(customConsole); // Execute the code
     return { output: output || 'Code executed successfully (no console output).', error: null };
   } catch (error: any) {
-    console.error("Execution Error:", error);
+    // Removed console.error - The error is handled by returning it.
     return { output: null, error: error.message || 'An unknown error occurred.' };
   }
 };
@@ -105,7 +110,7 @@ export default function CodeRunnerPage() {
           const result = await explainCode({ code });
           setExplanation(result.explanation);
       } catch (err) {
-          console.error("Error explaining code:", err);
+          console.error("Error explaining code:", err); // Keep this console.error for actual AI call failures
           toast({
               title: "Explanation Failed",
               description: "Could not get explanation from AI. Please try again.",
@@ -178,8 +183,7 @@ export default function CodeRunnerPage() {
                  <Tooltip>
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleClearCode} disabled={isRunning || isExplaining}>
-                        {/* Wrap icon in a span */}
-                       <span> <Trash2 className="h-5 w-5" /> </span>
+                       <Trash2 className="h-5 w-5" />
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -189,8 +193,7 @@ export default function CodeRunnerPage() {
                 <Tooltip>
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
-                        {/* Wrap icon in a span */}
-                       <span> <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} /></span>
+                       <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} />
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -200,15 +203,12 @@ export default function CodeRunnerPage() {
                  <Tooltip>
                    <TooltipTrigger asChild>
                      <Button onClick={handleRunCode} disabled={isRunning || isExplaining} className="bg-accent hover:bg-accent/90">
-                        {/* Wrap children in a span */}
-                       <span>
-                           {isRunning ? (
-                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                           ) : (
-                             <Play className="mr-2 h-4 w-4" />
-                           )}
-                           Run
-                       </span>
+                       {isRunning ? (
+                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                       ) : (
+                         <Play className="mr-2 h-4 w-4" />
+                       )}
+                       Run
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>
@@ -223,7 +223,7 @@ export default function CodeRunnerPage() {
         {/* Output/Explanation Section */}
         <Card id="ai-explainer-section"> {/* Add ID here */}
           <CardHeader>
-            <CardTitle>{explanation ? 'AI Explanation' : 'Output'}</CardTitle>
+            <CardTitle>{explanation ? 'AI Explanation' : 'Output / Console'}</CardTitle> {/* Updated Title */}
             <CardDescription>{explanation ? 'AI analysis of your code.' : 'Results or errors from your code execution.'}</CardDescription>
           </CardHeader>
           <CardContent>
@@ -235,7 +235,7 @@ export default function CodeRunnerPage() {
                 {!explanation && !isRunning && output && <code className="text-foreground">{output}</code>}
                 {!explanation && !isRunning && error && <code className="text-destructive">{`Error: ${error}`}</code>}
                 {!explanation && !isRunning && !output && !error && !isExplaining && (
-                  <span className="text-muted-foreground">Run code to see output here.</span>
+                  <span className="text-muted-foreground">Run code or ask for explanation to see output.</span>
                 )}
               </pre>
             </ScrollArea>
