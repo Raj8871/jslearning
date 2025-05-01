@@ -52,7 +52,16 @@ const safeEval = (code: string) => {
           ? code.substring(code.indexOf(';') + 1)
           : code;
 
-      const func = new Function('console', sanitizedCode);
+      // Prevent direct access to global scope (experimental)
+      const wrappedCode = `
+        'use strict';
+        const window = undefined;
+        const document = undefined;
+        const globalThis = undefined;
+        ${sanitizedCode}
+      `;
+
+      const func = new Function('console', wrappedCode);
       func(customConsole); // Execute the code
       return { output: output || 'Code executed successfully (no console output).', error: null };
   } catch (error: any) {
@@ -209,8 +218,10 @@ export default function CodeRunnerPage() {
                 <Tooltip>
                    <TooltipTrigger asChild>
                      <Button variant="ghost" size="icon" onClick={handleExplainCode} disabled={isRunning || isExplaining}>
-                       <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} />
-                        <span className="sr-only">Explain Code with AI</span>
+                        <span className="inline-flex items-center justify-center"> {/* Wrap icon */}
+                          <BrainCircuit className={`h-5 w-5 ${isExplaining ? 'text-accent animate-pulse' : ''}`} />
+                        </span>
+                       <span className="sr-only">Explain Code with AI</span>
                      </Button>
                    </TooltipTrigger>
                    <TooltipContent>

@@ -707,7 +707,7 @@ Placing created elements onto the page or removing existing ones.
 Making elements react to user interactions (clicks, mouse movements, key presses, etc.).
 
 -   \`element.addEventListener('eventName', function(event) { /* code to run */ })\`: The standard and recommended way. Attaches an event listener function to an element.
-    -   \`eventName\`: The type of event (e.g., 'click', 'mouseover', 'keydown').
+    -   \`eventName\`: The type of event (e.g., \`'click'\`, \`'mouseover'\`, \`'keydown'\`).
     -   \`function(event)\`: The function to execute when the event occurs. The optional \`event\` object contains details about the event.
 -   \`element.removeEventListener('eventName', functionReference)\`: Removes a previously added listener. Requires a reference to the *exact same function* used in \`addEventListener\`.
 
@@ -1068,7 +1068,7 @@ export default function LearnTopicPage() {
         <p className="text-muted-foreground mt-4">The learning topic "{topicId}" does not exist.</p>
         <Button asChild variant="link" className="mt-6">
           <Link href="/learn">
-            <span>&larr; Back to Learning Topics</span>
+            <span className='inline-block'>&larr; Back to Learning Topics</span>
           </Link>
         </Button>
       </div>
@@ -1142,7 +1142,7 @@ export default function LearnTopicPage() {
       <>
         <div className="mb-10">
             <Link href="/learn" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-                <span>&larr; Back to Topics</span>
+                <span className='inline-block'>&larr; Back to Topics</span>
             </Link>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">{topic.title}</h1>
             <p className="mt-3 text-lg text-muted-foreground">{topic.description}</p>
