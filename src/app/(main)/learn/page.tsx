@@ -2,7 +2,7 @@
 // src/app/(main)/learn/page.tsx
 import React from 'react'; // Import React
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Code, FunctionSquare, Variable, Workflow, FileJson, Network, AlertTriangle, Pointer, Timer } from "lucide-react";
+import { BookOpen, Code, FunctionSquare, Variable, Workflow, FileJson, Network, AlertTriangle, Pointer, Timer, Package, Database } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +20,8 @@ const learningCategories = [
   { id: 'this-keyword', title: 'The `this` Keyword', description: 'Understand context and how `this` is determined.', icon: Pointer, href: '/learn/this-keyword' },
   { id: 'json', title: 'JSON', description: 'Parse and stringify JavaScript Object Notation.', icon: FileJson, href: '/learn/json' },
   { id: 'fetch-api', title: 'Fetch API', description: 'Make network requests to fetch resources.', icon: Network, href: '/learn/fetch-api' },
+  { id: 'modules', title: 'Modules', description: 'Organize code using import and export.', icon: Package, href: '/learn/modules' },
+  { id: 'web-storage', title: 'Web Storage', description: 'Use localStorage and sessionStorage.', icon: Database, href: '/learn/web-storage' },
 ];
 
 
@@ -40,16 +42,14 @@ export default function LearnPage() {
             <Link href={category.href} key={category.id} className="block group">
               <Card className="h-full transition-all duration-300 ease-in-out group-hover:shadow-lg group-hover:-translate-y-1 border-transparent hover:border-accent">
                 <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-                  <div className="flex-shrink-0 w-8 h-8"> {/* Added fixed size container */}
-                    {/* Conditionally render based on type: functional component or Lucide icon */}
-                    {typeof IconComponent === 'function' && !IconComponent.prototype?.render ? (
-                       // It's likely a functional component (like our SVG wrappers or Lucide icons)
-                      <IconComponent className="h-full w-full text-accent" />
+                   <div className="flex-shrink-0 w-8 h-8 text-accent"> {/* Ensure icon color */}
+                    {/* Check if IconComponent is a valid React component type */}
+                    {IconComponent && typeof IconComponent === 'function' ? (
+                      <IconComponent className="h-full w-full" />
                     ) : (
-                       // It might be a class component (less likely) or handle potential edge cases
-                      <span>Icon?</span> // Fallback or alternative rendering
+                      <BookOpen className="h-full w-full" /> // Default icon
                     )}
-                  </div>
+                   </div>
                   <div className="flex-1 space-y-1">
                     <CardTitle>{category.title}</CardTitle>
                     <CardDescription>{category.description}</CardDescription>
@@ -85,5 +85,3 @@ export default function LearnPage() {
     </div>
   );
 }
-
-    

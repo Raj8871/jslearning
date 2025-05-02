@@ -707,7 +707,7 @@ Placing created elements onto the page or removing existing ones.
 Making elements react to user interactions (clicks, mouse movements, key presses, etc.).
 
 -   \`element.addEventListener('eventName', function(event) { /* code to run */ })\`: The standard and recommended way. Attaches an event listener function to an element.
-    -   \`eventName\`: The type of event (e.g., \`'click'\`, \`'mouseover'\`, \`'keydown'\`).
+    -   \`eventName\`: The type of event (e.g., \`click\`, \`mouseover\`, \`keydown\`).
     -   \`function(event)\`: The function to execute when the event occurs. The optional \`event\` object contains details about the event.
 -   \`element.removeEventListener('eventName', functionReference)\`: Removes a previously added listener. Requires a reference to the *exact same function* used in \`addEventListener\`.
 
@@ -850,7 +850,7 @@ ECMAScript (ES) is the standard that JavaScript is based on. Starting with ES6 (
 -   **Rest Parameter**: Collects an indefinite number of arguments into an array within a function definition: \`function sum(...numbers) { ... }\`.
 -   **Spread Operator**: Expands an iterable (like an array or string) into individual elements, useful for function calls, array literals, or object literals (ES2018+). \`const combined = [...arr1, ...arr2];\` \`myFunction(...args);\`.
 -   **Classes**: Syntactic sugar over JavaScript's existing prototypal inheritance, providing a clearer syntax for creating constructor functions and handling inheritance (\`class MyClass { constructor() {} method() {} }\`, \`extends\`, \`super\`).
--   **Modules**: Native support for modular code using \`import\` and \`export\` statements, allowing better organization and code reuse (primarily used with build tools or in modern browsers/Node.js). *(Not easily demonstrable in this editor)*.
+-   **Modules**: Native support for modular code using \`import\` and \`export\` statements, allowing better organization and code reuse (primarily used with build tools or in modern browsers/Node.js). See *Modules*.
 -   **Promises**: A standard way to handle asynchronous operations, representing a value that may be available now, or in the future, or never. They improve upon callback-based patterns (\`new Promise((resolve, reject) => { ... })\`, \`.then()\`, \`.catch()\`). See *Async JS*.
 -   **Symbols**: A primitive data type creating unique identifiers, often used for object property keys to avoid naming collisions. See *Variables & Data Types*.
 -   **Iterators and Generators**: Protocols for defining standard ways to produce sequences of values. *(Advanced topic)*.
@@ -858,13 +858,13 @@ ECMAScript (ES) is the standard that JavaScript is based on. Starting with ES6 (
 **Key Later Features (ES2016+):**
 
 -   **Exponentiation Operator (\`**\`):** \`2 ** 3\` is 8 (ES2016).
--   **\`Array.prototype.includes()\`**: Checks if an array contains a value (ES2016). See *Arrays*.
+-   **\`Array.prototype.includes\`**: Checks if an array contains a value (ES2016). See *Arrays*.
 -   **\`async\`/\`await\`**: Syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code, improving readability (ES2017). See *Async JS*.
--   **\`Object.values()\` / \`Object.entries()\`**: Get arrays of object values or [key, value] pairs (ES2017). See *Objects*.
+-   **\`Object.values\` / \`Object.entries\`**: Get arrays of object values or [key, value] pairs (ES2017). See *Objects*.
 -   **Rest/Spread Properties for Objects**: Use \`...\` for gathering remaining object properties or spreading properties into new objects (ES2018).
--   **\`Promise.prototype.finally()\`**: Executes code when a Promise is settled (either resolved or rejected) (ES2018). See *Async JS*.
+-   **\`Promise.prototype.finally\`**: Executes code when a Promise is settled (either resolved or rejected) (ES2018). See *Async JS*.
 -   **Optional Chaining (\`?.`)\`**: Safely access nested object properties without causing errors if an intermediate property is \`null\` or \`undefined\` (ES2020). \`user?.address?.street\`.
--   **Nullish Coalescing Operator (\`??\`)\`**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
+-   **Nullish Coalescing Operator (\`??`)\`**: Provides a default value only when the left-hand operand is \`null\` or \`undefined\` (unlike \`||\` which triggers on any falsy value) (ES2020). \`value ?? defaultValue\`.
 -   *...and many more ongoing improvements.*
 
 Modern JavaScript relies heavily on these features. Run the examples to see them in action! Note that Promises and async/await handle operations that don't complete instantly, so their console output might appear after later synchronous code.
@@ -1661,16 +1661,16 @@ The \`fetch()\` function returns a Promise that resolves to a \`Response\` objec
 
 Key properties and methods of the \`Response\` object:
 
--   **`response.ok`**: A boolean indicating if the request was successful (HTTP status code 200-299). **Important:** Fetch *only* rejects its promise on network errors, not on HTTP error statuses (like 404 Not Found or 500 Internal Server Error). You *must* check \`response.ok\` or \`response.status\` manually.
--   **`response.status`**: The HTTP status code (e.g., 200, 404, 500).
--   **`response.statusText`**: The status message (e.g., "OK", "Not Found").
--   **`response.headers`**: A \`Headers\` object to access response headers.
+-   **\`response.ok\`**: A boolean indicating if the request was successful (HTTP status code 200-299). **Important:** Fetch *only* rejects its promise on network errors, not on HTTP error statuses (like 404 Not Found or 500 Internal Server Error). You *must* check \`response.ok\` or \`response.status\` manually.
+-   **\`response.status\`**: The HTTP status code (e.g., 200, 404, 500).
+-   **\`response.statusText\`**: The status message (e.g., "OK", "Not Found").
+-   **\`response.headers\`**: A \`Headers\` object to access response headers.
 -   **Methods to read the response body (these return Promises):**
-    -   **`response.json()`**: Parses the body as JSON.
-    -   **`response.text()`**: Reads the body as plain text.
-    -   **`response.blob()`**: Reads the body as a \`Blob\` (binary data).
-    -   **`response.formData()`**: Reads the body as \`FormData\`.
-    -   **`response.arrayBuffer()`**: Reads the body as an \`ArrayBuffer\`.
+    -   **\`response.json()\`**: Parses the body as JSON.
+    -   **\`response.text()\`**: Reads the body as plain text.
+    -   **\`response.blob()\`**: Reads the body as a \`Blob\` (binary data).
+    -   **\`response.formData()\`**: Reads the body as \`FormData\`.
+    -   **\`response.arrayBuffer()\`**: Reads the body as an \`ArrayBuffer\`.
     **You can only read the response body *once* per \`Response\` object.**
 
 **Common Patterns:**
@@ -1733,6 +1733,293 @@ createUser({ name: 'New User', email: 'new@example.com' });
 \`\`\`
 
 The Fetch API is fundamental for interacting with web services and APIs in modern web development.
+`,
+  },
+   modules: {
+    title: 'Modules',
+    description: 'Organize code into reusable modules using import and export.',
+    initialCode: `// --- This code won't run directly in this editor ---
+// Modules require a specific environment (like a browser supporting <script type="module"> or Node.js).
+// This editor simulates basic execution, but doesn't fully support module loading between "files".
+
+// --- Assume this is in 'mathUtils.js' ---
+/*
+export const PI = 3.14159;
+
+export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}
+
+// Default export (can only have one per module)
+export default function multiply(a, b) {
+  return a * b;
+}
+*/
+
+// --- Assume this is in 'main.js' ---
+/*
+// Import named exports
+import { PI, add, subtract } from './mathUtils.js';
+
+// Import default export (can use any name)
+import multiplyNumbers from './mathUtils.js';
+
+// Import everything as a namespace object
+import * as math from './mathUtils.js';
+
+console.log("PI:", PI); // Output: 3.14159
+console.log("Add(5, 3):", add(5, 3)); // Output: 8
+console.log("Subtract(10, 4):", subtract(10, 4)); // Output: 6
+console.log("Multiply(6, 7):", multiplyNumbers(6, 7)); // Output: 42
+
+console.log("--- Namespace Import ---");
+console.log("math.PI:", math.PI);
+console.log("math.add(2, 2):", math.add(2, 2));
+console.log("math.default(3, 3):", math.default(3, 3)); // Access default via .default
+
+*/
+
+console.warn("--- Modules (import/export) ---");
+console.warn("JavaScript Modules (import/export) allow splitting code into separate files.");
+console.warn("This is crucial for organizing larger applications.");
+console.log("\nKey Concepts:");
+console.log("- 'export': Makes variables, functions, or classes available to other modules.");
+console.log("  - Named Exports: 'export const x = ...;' or 'export { x, y };'");
+console.log("  - Default Export: 'export default ...;' (only one per file).");
+console.log("- 'import': Brings exported items into the current module.");
+console.log("  - Named Imports: 'import { x, y } from './module.js';'");
+console.log("  - Default Import: 'import myDefault from './module.js';'");
+console.log("  - Namespace Import: 'import * as myModule from './module.js';'");
+console.log("\nNote: This editor cannot simulate actual module loading. See the explanation panel for details.");
+`,
+    aiPromptContent: `
+### JavaScript Modules (ES Modules)
+Introduced in ES6 (ES2015), modules provide a standard way to organize JavaScript code into separate files (modules) and share code between them. This is essential for building maintainable and scalable applications. Modules help avoid polluting the global scope and manage dependencies explicitly.
+
+**Key Concepts:**
+
+1.  **`export` Statement:**
+    Used within a module file to make variables, functions, classes, or objects available for other modules to use.
+    -   **Named Exports:** Export multiple items from a module using their original names.
+        \`\`\`javascript
+        // utils.js
+        export const apiKey = "123xyz";
+        export function helperFunc() { /* ... */ }
+        export class User { /* ... */ }
+
+        // --- OR ---
+        const value = 10;
+        function anotherFunc() {}
+        export { value, anotherFunc }; // Export existing items
+        \`\`\`
+    -   **Default Export:** Export a single primary value from a module. There can be only **one** default export per module.
+        \`\`\`javascript
+        // myComponent.js
+        export default function MyComponent() { /* ... */ }
+        // OR
+        const config = { /* ... */ };
+        export default config;
+        \`\`\`
+        You can combine named and default exports in the same module.
+
+2.  **`import` Statement:**
+    Used at the top of a module file to bring in code exported by another module.
+    -   **Importing Named Exports:** Use curly braces \`{...}\` to specify which named exports you want to import. You can optionally rename imports using \`as\`.
+        \`\`\`javascript
+        // main.js
+        import { apiKey, helperFunc } from './utils.js';
+        import { value as dataValue } from './utils.js'; // Renaming
+
+        console.log(apiKey);
+        helperFunc();
+        console.log(dataValue);
+        \`\`\`
+    -   **Importing Default Exports:** Provide a name (it can be anything you choose) to represent the default export.
+        \`\`\`javascript
+        // main.js
+        import MyCustomComponent from './myComponent.js'; // Name can be anything
+        MyCustomComponent();
+        \`\`\`
+    -   **Importing Namespace:** Import everything exported from a module as a single object. Named exports become properties of this object, and the default export becomes the \`default\` property.
+        \`\`\`javascript
+        // main.js
+        import * as Utils from './utils.js';
+
+        console.log(Utils.apiKey);
+        Utils.helperFunc();
+        console.log(Utils.default); // Access default export if it exists
+        \`\`\`
+    -   **Importing Both Default and Named:**
+        \`\`\`javascript
+        import MyDefault, { namedExport1, namedExport2 } from './module.js';
+        \`\`\`
+
+**How Modules Work:**
+
+-   **Strict Mode:** Code inside modules automatically runs in strict mode (\`'use strict';\`).
+-   **Scope:** Each module has its own top-level scope. Variables declared in one module are not available in others unless explicitly exported and imported.
+-   **Loading:** Browsers load modules using the \`<script type="module" src="..."></script>\` tag. Node.js uses \`.mjs\` file extensions or \`"type": "module"\` in \`package.json\`. Module loading is typically asynchronous and handled by the environment's module loader.
+-   **Paths:** Module paths (e.g., \`'./utils.js'\`) are usually relative or absolute URLs in browsers, or follow Node.js resolution rules.
+
+**Important Note:** This online editor cannot fully simulate the behavior of ES Modules, as it requires a file system and a module loader. The code example shows *how* you would write module code, but it won't execute the import/export logic across separate "files" here. Focus on understanding the \`import\` and \`export\` syntax.
+`,
+  },
+    'web-storage': {
+    title: 'Web Storage API',
+    description: 'Persist data in the browser using localStorage and sessionStorage.',
+    initialCode: `console.log("--- Web Storage API (localStorage & sessionStorage) ---");
+
+// Web Storage provides mechanisms to store key-value pairs locally within the user's browser.
+// It's useful for saving user preferences, session information, offline data, etc.
+// Note: Web Storage is synchronous, which can potentially block the main thread if used excessively.
+// It has size limits (usually 5-10MB per origin).
+
+// --- localStorage ---
+// - Persists even after the browser window is closed.
+// - Data is available across all tabs/windows from the same origin.
+// - Stays until explicitly cleared by code or the user.
+
+console.log("\\n1. localStorage Example:");
+
+try {
+  // Set item: Stores data as a string. Non-string data needs stringification.
+  localStorage.setItem('username', 'Alice');
+  localStorage.setItem('theme', 'dark');
+  const userPrefs = { notifications: true, fontSize: 14 };
+  localStorage.setItem('preferences', JSON.stringify(userPrefs)); // Stringify objects/arrays
+
+  console.log("   Set items in localStorage.");
+
+  // Get item: Retrieves data (always as a string).
+  const username = localStorage.getItem('username');
+  const theme = localStorage.getItem('theme');
+  const storedPrefsString = localStorage.getItem('preferences');
+  const retrievedPrefs = storedPrefsString ? JSON.parse(storedPrefsString) : null; // Parse stringified data
+
+  console.log("   Retrieved username:", username); // Output: Alice
+  console.log("   Retrieved theme:", theme);     // Output: dark
+  console.log("   Retrieved preferences:", retrievedPrefs); // Output: { notifications: true, fontSize: 14 }
+
+  // Check length
+  console.log("   localStorage length:", localStorage.length); // Output: 3
+
+  // Get key by index
+  const firstKey = localStorage.key(0);
+  console.log("   First key in localStorage:", firstKey); // Order not guaranteed
+
+  // Remove item
+  localStorage.removeItem('theme');
+  console.log("   Removed 'theme'. localStorage length:", localStorage.length); // Output: 2
+
+  // Clear all items
+  // localStorage.clear();
+  // console.log("   Cleared localStorage. Length:", localStorage.length); // Output: 0
+
+} catch (e) {
+  console.error("   Error accessing localStorage:", e.message);
+  console.warn("   (May occur in strict privacy modes or sandboxed environments)");
+}
+
+
+// --- sessionStorage ---
+// - Data persists only for the duration of the browser *session* (until the tab/window is closed).
+// - Data is isolated to the specific tab/window it was created in.
+
+console.log("\\n2. sessionStorage Example:");
+
+try {
+  // Set item
+  sessionStorage.setItem('sessionID', 'xyz789');
+  sessionStorage.setItem('tempData', 'Some temporary value');
+
+  console.log("   Set items in sessionStorage.");
+
+  // Get item
+  const sessionID = sessionStorage.getItem('sessionID');
+  console.log("   Retrieved sessionID:", sessionID); // Output: xyz789
+
+  // Check length
+  console.log("   sessionStorage length:", sessionStorage.length);
+
+  // Remove item
+  sessionStorage.removeItem('tempData');
+  console.log("   Removed 'tempData'. sessionStorage length:", sessionStorage.length);
+
+  // sessionStorage.clear(); // Clears only this session's storage
+
+} catch (e) {
+  console.error("   Error accessing sessionStorage:", e.message);
+}
+
+console.log("\n--- Important Considerations ---");
+console.log("- Storage Limit: Typically 5-10MB per origin. Exceeding limit throws error.");
+console.log("- Synchronous: Operations block the main thread. Avoid heavy use.");
+console.log("- Security: Data is stored client-side, don't store sensitive info (like passwords).");
+console.log("- Data Type: Only strings can be stored. Use JSON.stringify/parse for objects/arrays.");
+console.log("- Alternatives: IndexedDB for larger/complex data, Cookies for server communication.");
+
+console.warn("\nNOTE: You may need to open browser developer tools (Application tab -> Storage) to fully observe localStorage/sessionStorage persistence across page reloads or sessions.");
+`,
+    aiPromptContent: `
+### Web Storage API (\`localStorage\` & \`sessionStorage\`)
+The Web Storage API provides mechanisms for web applications to store data locally within the user's browser. This allows data to persist across page reloads and even browser sessions, depending on the mechanism used. It uses a simple key-value store model, where both keys and values are stored as strings.
+
+**Two Main Mechanisms:**
+
+1.  **\`localStorage\`:**
+    -   **Persistence:** Stores data with **no expiration time**. The data remains available even after the browser window is closed and reopened. It persists until explicitly cleared by JavaScript code (\`localStorage.clear()\`), by the user clearing their browser data, or due to storage limits being exceeded.
+    -   **Scope:** Data is scoped to the **origin** (protocol, domain, and port). All scripts from the same origin can access the same \`localStorage\` data, across different tabs and windows.
+    -   **Use Cases:** Storing user preferences (like theme settings), application settings, or data that should remain available across browser sessions.
+
+2.  **\`sessionStorage\`:**
+    -   **Persistence:** Stores data only for the duration of the **page session**. A page session lasts as long as the browser tab or window is open. Data is cleared when the tab/window is closed. Reloading or restoring a page *maintains* the session data. Opening the same page in a new tab/window starts a *new* session with separate storage.
+    -   **Scope:** Data is scoped to the **origin** *and* the **browser tab/window (session)*. Data stored in one tab's \`sessionStorage\` is not accessible by another tab, even if it's the same origin.
+    -   **Use Cases:** Storing temporary session-specific data, like user login status for the current visit (though more secure methods are often preferred), temporary application state, or user input in multi-step forms.
+
+**Common API Methods (Identical for both \`localStorage\` and \`sessionStorage\`):**
+
+-   **`setItem(key, value)`:** Adds or updates a key-value pair. Both \`key\` and \`value\` must be strings. Non-string values need to be stringified (e.g., using \`JSON.stringify\`).
+    \`\`\`javascript
+    localStorage.setItem('username', 'Alice');
+    localStorage.setItem('settings', JSON.stringify({ theme: 'dark' }));
+    \`\`\`
+-   **`getItem(key)`:** Retrieves the value associated with the key. Returns the string value, or \`null\` if the key doesn't exist. Remember to parse data that was stringified (e.g., using \`JSON.parse\`).
+    \`\`\`javascript
+    let username = localStorage.getItem('username'); // "Alice"
+    let settingsStr = localStorage.getItem('settings');
+    let settings = settingsStr ? JSON.parse(settingsStr) : null; // { theme: 'dark' }
+    let nonExistent = localStorage.getItem('nonExistentKey'); // null
+    \`\`\`
+-   **`removeItem(key)`:** Removes the key-value pair associated with the key.
+    \`\`\`javascript
+    localStorage.removeItem('username');
+    \`\`\`
+-   **`clear()`:** Removes *all* key-value pairs stored in that storage object (for that origin/session).
+    \`\`\`javascript
+    localStorage.clear(); // Clears all localStorage for the origin
+    \`\`\`
+-   **`length` (Property):** Returns the number of key-value pairs currently stored.
+    \`\`\`javascript
+    let count = localStorage.length;
+    \`\`\`
+-   **`key(index)`:** Returns the name of the key at the given numerical index (order is not guaranteed and may change). Returns \`null\` if the index is out of bounds.
+    \`\`\`javascript
+    let firstKey = localStorage.key(0);
+    \`\`\`
+
+**Important Considerations:**
+
+-   **Storage Limits:** Browsers impose limits (typically 5-10MB per origin) on the amount of data that can be stored. Exceeding the limit will throw an error (often a \`QuotaExceededError\`).
+-   **Synchronous API:** All Web Storage operations are **synchronous**, meaning they block the browser's main thread while executing. Heavy or frequent use can negatively impact performance and user experience. For larger or more complex data storage needs, consider asynchronous APIs like **IndexedDB**.
+-   **String-Only Storage:** Only strings can be stored directly. Use \`JSON.stringify()\` before storing objects/arrays and \`JSON.parse()\` after retrieving them.
+-   **Security:** Web Storage data is stored client-side and is **not automatically secured**. Do not store sensitive information like passwords, tokens (unless specifically designed for it), or private user data. Data can be accessed by any script from the same origin, including potentially malicious scripts introduced via Cross-Site Scripting (XSS) vulnerabilities.
+-   **Availability:** Accessing \`localStorage\` or \`sessionStorage\` might throw an error in certain browser privacy modes (e.g., private browsing with strict settings) or in sandboxed environments (like some \`<iframe>\` contexts). It's good practice to wrap storage access in \`try...catch\` blocks.
+
+Experiment with setting and retrieving data in the editor. To fully observe persistence, check the "Application" tab (or similar) in your browser's developer tools.
 `,
   },
 };
@@ -1896,11 +2183,54 @@ const safeEval = (code: string) => {
         };
     };
 
+    // Mock Web Storage API
+    const createMockStorage = (): Storage => {
+        let store: Record<string, string> = {};
+        return {
+            getItem: (key: string): string | null => {
+                customConsole.log(`[Storage] getItem('${key}')`);
+                return store.hasOwnProperty(key) ? store[key] : null;
+            },
+            setItem: (key: string, value: string): void => {
+                customConsole.log(`[Storage] setItem('${key}', '${String(value).substring(0,50)}${String(value).length > 50 ? '...' : ''}')`);
+                 // Simulate potential quota error (very basic)
+                 if (Object.keys(store).length > 20 && !store.hasOwnProperty(key)) { // Arbitrary limit for demo
+                    throw new DOMException("QuotaExceededError", "QuotaExceededError");
+                 }
+                store[key] = String(value);
+            },
+            removeItem: (key: string): void => {
+                customConsole.log(`[Storage] removeItem('${key}')`);
+                delete store[key];
+            },
+            clear: (): void => {
+                customConsole.log(`[Storage] clear()`);
+                store = {};
+            },
+            key: (index: number): string | null => {
+                customConsole.log(`[Storage] key(${index})`);
+                const keys = Object.keys(store);
+                return index >= 0 && index < keys.length ? keys[index] : null;
+            },
+            get length(): number {
+                 const len = Object.keys(store).length;
+                 customConsole.log(`[Storage] length -> ${len}`);
+                 return len;
+             },
+             // Add other Storage methods/properties if needed
+        };
+    };
+
+    const mockLocalStorage = createMockStorage();
+    const mockSessionStorage = createMockStorage();
+
 
     const mockWindow = {
         document: mockDocument,
         fetch: mockFetch, // Add mocked fetch
-        // Add other window properties if needed, e.g., setTimeout, localStorage (mocked)
+        localStorage: mockLocalStorage,
+        sessionStorage: mockSessionStorage,
+        // Add other window properties if needed, e.g., setTimeout
         setTimeout: (fn: Function, ms: number) => setTimeout(fn, ms), // Use real setTimeout
         addEventListener: (type: string) => customConsole.log(`[Window] Added '${type}' listener`),
         removeEventListener: (type: string) => customConsole.log(`[Window] Removed '${type}' listener`),
@@ -1928,9 +2258,9 @@ const safeEval = (code: string) => {
 
         // Pass mocks explicitly. Globals like 'window' or 'document' won't be
         // automatically available unless explicitly passed or defined within the code string.
-        const func = new Function('console', 'document', 'window', 'fetch', wrappedCode);
+        const func = new Function('console', 'document', 'window', 'fetch', 'localStorage', 'sessionStorage', wrappedCode);
         // Call the function, passing the mocked environment
-        func(customConsole, mockDocument, mockWindow, mockFetch);
+        func(customConsole, mockDocument, mockWindow, mockFetch, mockLocalStorage, mockSessionStorage);
 
         // Since the wrapped code is now async, safeEval itself doesn't immediately
         // capture the final output if there are awaits.
@@ -2166,5 +2496,3 @@ export default function LearnTopicPage() {
     </div>
   );
 }
-
-    
